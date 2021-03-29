@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-end;
+        }
+        .bottom {
+            --scale: 1;
+            width: 100%;
+            height: 95px;
+            background-color: #fafafa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .bottom li {
+            list-style: none;
+            width: calc(75px * var(--scale));
+            height: calc(75px * var(--scale));
+            cursor: default;
+            position: relative;
+            top: calc((75px * var(--scale) - 75px)/2* -1);
+            border-radius: 50%;
+            overflow: hidden;
+            /* transition: 15ms all ease-out; */
+        }
+        .bottom li~li {
+            margin-left: 15px;
+        }
+        .bottom li img {
+            width: 100%;
+            height: 100%;
+        }
+        .bottom li.loading {
+            animation: loading 1s ease-in infinite;
+        }
+        @keyframes loading {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            60% {
+                transform: translateY(-30px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <ul class="bottom">
+            <li>
+                <img src="https://dss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=425675588,3052138719&fm=58" alt="">
+            </li>
+            <li>
+                <img src="https://dss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=962817397,3883445337&fm=58" alt="">
+            </li>
+            <li>
+                <img src="https://dss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=3981742924,782724466&fm=58" alt="">
+            </li>
+            <li>
+                <img src="https://dss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=2153080534,3883764607&fm=58" alt="">
+            </li>
+            <li>
+                <img src="https://dss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=2745564463,2311798605&fm=58" alt="">
+            </li>
+            <li>
+                <img src="https://dss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=198405653,292935329&fm=58" alt="">
+            </li>
+        </ul>
+    </div>
+    <script>
+        document.querySelectorAll('.bottom li').forEach(li => {
+            li.addEventListener('click', e => {
+                var target = e.currentTarget;
+                target.classList.add('loading')
+                setTimeout(() => {
+                    target.classList.remove('loading')
+                }, 2000);
+            })
+            li.addEventListener('mousemove', e => {
+                let item = e.target.parentNode;
+                const itemRect = item.getBoundingClientRect()
+                let offset = Math.abs(e.clientX - itemRect.left) / itemRect.width
+                
+                let prev = item.previousElementSibling || null;
+                let next = item.nextElementSibling || null;
+
+                let scale = 0.4;
+                resetScale()
+                if (prev) {
+                    prev.style.setProperty('--scale', 1 + scale * Math.abs(offset - 1))
+                }
+                item.style.setProperty('--scale', 1 + scale)
+                if (next) {
+                    next.style.setProperty('--scale', 1 + scale * offset)
+                }
+            }, true)
+        })
+        document.querySelector('.bottom').addEventListener('mouseleave', resetScale);
+        function resetScale () {
+            document.querySelectorAll('.bottom li').forEach(li => {
+                li.style.setProperty('--scale', 1)
+            })
+        }
+    </script>
+</body>
+</html>
